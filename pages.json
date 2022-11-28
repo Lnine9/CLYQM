@@ -50,5 +50,27 @@
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	},
-	"uniIdRouter": {}
+	"uniIdRouter": {},
+	"condition": { //模式配置，仅开发期间生效
+		"current": 1, //当前激活的模式(list 的索引项)
+		"list": [
+			{
+				"name": "slogin",
+				"path": "pages/slogin/slogin"
+			},
+			{
+				"name": "sqr",
+				"path": "pages/sqr/sqr"
+			},
+			{
+				"name": "sload",
+				"path": "pages/load/load"
+			},
+			{
+				"name": "newh",
+				"path": "pages/newDetection/newDetection"
+			}
+	
+		]
+	}
 }

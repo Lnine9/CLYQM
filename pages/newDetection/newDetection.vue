@@ -40,7 +40,7 @@
 			</view>
 		</view>
 		<view class="btnStart">
-			<button type="primary" @click="start()">开始</button>
+			<button type="primary" @click="start()">新增</button>
 		</view>
 		<uni-popup background-color="white" ref="popup" type="bottom" animation>
 			<view class="addpop">
@@ -178,15 +178,22 @@
 				const that = this
 				NDAPI.createTestHistory(data).then(res => {
 					console.log(res);
-					that.historyId = res.data.data;
-					uni.showToast({
-						title: '添加成功',
-						icon: 'success'
-					});
-					//跳转至二维码界面
-					uni.navigateTo({
-						url: "/pages/sqr/sqr?historyId=" + that.historyId
-					});
+					if(res.data.code == 200){
+						that.historyId = res.data.data;
+						uni.showToast({
+							title: '添加成功',
+							icon: 'success'
+						});
+						uni.navigateBack({
+							delta:-1
+						})
+					} else {
+						uni.showToast({
+							title: res.data.data,
+							icon: 'none'
+						});
+					}
+					
 				}).catch(err => {
 					uni.showToast({
 						title: '添加失败',

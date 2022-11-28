@@ -11,4 +11,10 @@ export class api{
 	  console.log(data);
   	  return yqRequest.get('/user/getUserInfo',data)
   }
+  static getStudent(data){
+  	  return yqRequest.get('/student/getStudent',data)
+  }
+  static getHistory(data){
+  	  return yqRequest.get('/history/getTestHistory',data)
+  }
 }	

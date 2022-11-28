@@ -1,18 +1,20 @@
 <template>
 	<view>
-		<view class="sun-index" v-if="needbind">
+		<view class="sun-index">
 			<view class="sun-logo-box">
 				<view class="sun-logo">
-					<image class="sun-icon-img" src="@/static/scan.png" />
+					<image class="sun-icon-img" src="../../static/scan.png" />
 				</view>
 			</view>
+			<view class="sbuilding" v-if="building"><text>{{building + '·' +batch}}</text></view>
 			<view class="sun-login-box">
+				
 				<view class="sun-label">
 					<image style="width: 28rpx;height:39rpx;" />
 					<text class="label-text">学号</text>
 				</view>
 				<view class="sun-input-box">
-					<input v-model="state.no" type="text" placeholder="请输入学号" placeholder-class="placeholder-class" />
+					<input v-model="no" type="text" :style="{color: needbind ?'#3c3c3c': '#a7a7a7'}" :disabled="!needbind" placeholder="请输入学号" placeholder-class="placeholder-class" />
 				</view>
 			</view>
 			<view class="sun-login-box">
@@ -21,11 +23,15 @@
 					<text class="label-text">姓名</text>
 				</view>
 				<view class="sun-input-box">
-					<input v-model="state.name" type="text" placeholder="请输入姓名" placeholder-class="placeholder-class" />
+					<input v-model="name" type="text" :style="{color: needbind ?'#3c3c3c': '#a7a7a7'}" :disabled="!needbind" placeholder="请输入姓名" placeholder-class="placeholder-class" />
 				</view>
 			</view>
-			<view class="login-btn-box">
-				<view class="login-btn" @click="handleSubmit">确认</view>
+			<view class="sbuilding" style="color: gray;font-size: 16px;font-weight: normal;"><text>{{sbuilding ? `您的楼栋：${sbuilding}`: ''}}</text></view>
+			<view class="login-btn-box" v-if="needbind">
+				<view class="login-btn" @click="handleSubmit">确认绑定</view>
+			</view>
+			<view class="login-btn-box" v-if="!needbind && !onlybind">
+				<view class="login-btn" @click="scan">确认检测</view>
 			</view>
 		</view>
 		<view class="pop" v-if="success">
@@ -34,7 +40,7 @@
 				<text class="notimsg" style="font-size: 24px;font-weight: bold;">{{building}}</text>
 				<text class="notimsg" style="font-size: 16px;color: #5d5d5d;">{{no}}</text>
 				<text class="notimsg" style="font-size: 16px;color: #5d5d5d;">{{name}}</text>
-				<text class="notimsg" style="color:#16d897;">{{msg}}</text>
+				<text class="notimsg" style="color:#1ce3a8;font-weight: bold;">{{msg}}</text>
 			</view>
 		</view>
 		<view class="pop" v-if="fails">
@@ -43,14 +49,14 @@
 				<text class="notimsg" style="font-size: 24px;font-weight: bold;">{{building}}</text>
 				<text class="notimsg" style="font-size: 16px;color: #5d5d5d;">{{no}}</text>
 				<text class="notimsg" style="font-size: 16px;color: #5d5d5d;">{{name}}</text>
-				<text class="notimsg" style="color:#c8214e;">{{msg}}</text>
+				<text class="notimsg" style="color:#c8214e;font-weight: bold;">{{msg}}</text>
 			</view>
 		</view>
 		<view class="pop" v-if="needlogin">
 			<view>
 				<view class="sun-logo-box">
 					<view class="sun-logo">
-						<image class="sun-icon-img" src="@/static/code/scan.png" />
+						<image class="sun-icon-img" src="../../static/scan.png" />
 					</view>
 				</view>
 				<view class='loginmsg'>
@@ -73,6 +79,7 @@
 				no: '',
 				name: '',
 				building: '',
+				batch: '',
 				success: false,
 				fails: false,
 				msg: '',
@@ -80,7 +87,9 @@
 				wxid: undefined,
 				needlogin: false,
 				needbind: false,
-				historyId: undefined,
+				historyId: '000000',
+				onlybind: false,
+				sbuilding: '',
 			}
 		},
 		onLoad(params) {
@@ -100,11 +109,19 @@
 					return
 				}
 			}
-			
+			if(this.historyId == '000000'){
+				this.onlybind = true
+			}
+			console.log(this.$data);
 		},
 		onShow() {
 			console.log('loading cache wxid');
 			const that = this
+				
+			if (!this.onlybind){
+				this.getHistory()
+			}
+			
 			uni.getStorage({
 			    key: 'swxid',
 			    success: function (res) {
@@ -113,24 +130,77 @@
 					if (cachewxid) {
 						that.wxid = cachewxid
 						that.needlogin = false
+						that.getInfo()
 					} else {
 						that.needlogin = true
 					}
-					that.scan()
 			    },
 				fail: function (err) {
 					console.log(err);
 					that.needlogin = true
-					that.scan()
 				},
 			});
 		},
 		methods: {
+			getHistory() {
+				const that = this
+				api.getHistory({
+					historyId: this.historyId
+				}).then(res => {
+					if (res.data.code == 200) {
+						that.batch = res.data.data.batch
+						that.building = res.data.data.building
+					} else {
+						this.fails = true
+						this.msg = '参数错误，请重新扫码'
+					}
+				}).catch(err => {
+					console.log(err);
+					this.fails = true
+					this.msg = '参数错误，请重新扫码'
+				})
+			},
+			getInfo() {
+				const that = this
+				uni.showLoading({
+					mask:true,
+					title: "查询信息中...",
+				})
+				if (this.wxid){
+					api.getStudent({
+						wechatId: this.wxid
+					}).then(res => {
+						console.log(res);
+						if (res.data.code == 200) {
+							that.no = res.data.data.studentId
+							that.name = res.data.data.studentName
+							that.sbuilding = res.data.data.building
+							that.needbind = false
+						} else {
+							that.needbind = true
+							uni.showToast({
+								title: "请绑定信息",
+								icon: 'none'
+							})
+							
+						}
+					}).catch(err => {
+						console.log(err);
+						uni.showToast({
+							title: "网络错误, 请重新扫码",
+							icon: 'none'
+						})
+						that.fails = true
+						that.msg = "网络错误, 请重新扫码"
+					})
+				}
+				uni.hideLoading()
+			},
 			scan() {
 				console.log('scaning');
 				console.log(this.historyId);
 				uni.showLoading({
-					title: '正在查询信息...',
+					title: '正在确认信息...',
 				})
 				const that = this
 				if (this.historyId) {
@@ -143,11 +213,10 @@
 						wechatId: that.wxid,
 						historyId: that.historyId,
 					}).then(res => {
+						console.log(res.data);
 						if (res.data.code == 200) {
 							that.success = true
-							that.msg = "已完成确认"
-							that.no = res.data.data.studentId
-							that.name = res.data.data.studentName
+							that.msg = res.data.message
 						} else {
 							if (res.data.message == '用户未绑定！'){
 								uni.showToast({
@@ -158,13 +227,12 @@
 							} else {
 								that.fails = true
 								that.msg = '确认失败，请重新扫码'
-								if (res.data.data){
-									that.no = res.data.data.studentId
-									that.name = res.data.data.studentName
+								if (res.data.message){
 									that.msg = res.data.message
 								}
 							}
 						}
+						
 					}).catch(err => {
 						console.log(err);
 						uni.showToast({
@@ -199,13 +267,23 @@
 							icon: 'success',
 							duration: 1000
 						})
-						this.scan()
+						that.needbind = false
+						// 仅需绑定即可
+						console.log(that.onlybind);
+						if (that.onlybind) {
+							that.success = true
+							if (res.data.data){
+								that.building = res.data.data.building
+							}
+							that.msg = '绑定成功'
+						}
 					} else {
 						uni.showToast({
 							title: res.data.message,
 							duration: 3000,
 							icon: 'none',
 						})
+						that.needbind = true
 					}
 				}).catch(err => {
 					console.log(err);
@@ -259,14 +337,14 @@
 								that.needlogin = false
 								uni.showToast({
 									icon:'none',
-									title: '登录成功，等待确认信息',
+									title: '登录成功',
 									duration: 1000
 								})
-								setTimeout(that.scan, 1000)
+								that.getInfo()
 							} else {
 								uni.showToast({
 									icon:'error',
-									title: '登录失败',
+									title: '登录失败,请重新扫码',
 									duration: 1000
 								})
 							}
@@ -328,7 +406,7 @@
 		margin-left: 16rpx;
 		font-weight: 500;
 		color: #272e2d;
-		font-size: 30rpx;
+		font-size: 32rpx;
 	}
 
 	.sun-input-box {
@@ -338,6 +416,7 @@
 		border-bottom: 1rpx solid #eee;
 		padding: 0px 20rpx;
 		margin: 0px 15rpx;
+		font-size: 30rpx;
 	}
 
 	.sun-input-box input {
@@ -416,5 +495,16 @@
 	}
 	uni-modal .uni-modal__bd{      
 	    white-space: pre-wrap;      
+	}
+	
+	.sbuilding{
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		text-align: center;
+		font-size: 20px;
+		font-weight: bold;
+		margin-bottom: 20px;
+		letter-spacing: 0.2rem;
 	}
 </style>

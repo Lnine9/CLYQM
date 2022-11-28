@@ -16,7 +16,7 @@
 			</view>
 			<view class='qrcode-canvas-view' v-if="!isEnd">
 				<image class='qrcode-canvas' :src="QR"></image>
-				<view class="logomask"></view>
+				<!-- <view class="logomask"></view> -->
 			</view>
 		</view>
 		<view class="info">
@@ -25,9 +25,9 @@
 			<text class="total">{{total}}</text>
 			<text class="refresh" @click="refresh">刷新</text>
 		</view>
-		<view class='qrcode-opretion'>
+<!-- 		<view class='qrcode-opretion'>
 			<button @click='end' v-if="!isEnd" class='end-btn'>结束</button>
-		</view>
+		</view> -->
 	</view>
 </template>
 
