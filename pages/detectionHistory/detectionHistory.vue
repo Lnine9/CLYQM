@@ -7,15 +7,20 @@
 		<view style="width: 100%;height: 150rpx;"></view>
 		<view class="list">
 			<view class="flex_col" @longpress="onLongPress" :class="{'active':pickerUserIndex==index}"
-				@tap="listTap(index)" v-for="(item,index) in deteList" :key="index" :data-index="index">
-				<view class="flex_grow">
+				v-for="(item,index) in deteList" :key="index" :data-index="index">
+				<!-- <view class="flex_grow">
 					<view class="flex_col">
 						<view class="flex_grow">{{item.title}}</view>
 						<view class="enter">进入</view>
 					</view>
 					<view class="info">{{item.info}}</view>
 					<view class="time">{{item.time}}</view>
-				</view>
+				</view> -->
+				<uni-card @tap="listTap(index)" class="card" is-shadow shadow="5px 5px 30px #DDDDDD" :title="item.title"
+					extra="进入" :thumbnail="avatar" @click="onClick">
+					<view class="info">{{item.info}}</view>
+					<view class="time">{{item.time}}</view>
+				</uni-card>
 			</view>
 		</view>
 	</view>
@@ -28,10 +33,12 @@
 	export default {
 		data() {
 			return {
+				timer: null,
 				deteList: [],
 				scrollTop: 0,
 				phoneNumber: '',
-				history: []
+				history: [],
+				avatar: '/static/detectionHistory/QRCode.png'
 			}
 		},
 		onLoad(e) {
@@ -42,6 +49,12 @@
 		},
 		onShow() {
 			this.getListData();
+			this.timer = setInterval(() => {
+				this.getListData();
+			}, 1000 * 10);
+		},
+		onHide() {
+			clearInterval(this.timer);
 		},
 		onPageScroll(e) {
 			this.scrollTop = e.scrollTop;
@@ -64,13 +77,14 @@
 			},
 			turnTime(time) {
 				var date = new Date(parseInt(time));
-				return date.getFullYear() + "." + this.formatNumber(date.getMonth() + 1) + "." + this.formatNumber(date.getDate()) + "  " 
-				+ this.formatNumber(date.getHours()) + ":" + this.formatNumber(date.getMinutes());
+				return date.getFullYear() + "." + this.formatNumber(date.getMonth() + 1) + "." + this.formatNumber(date
+						.getDate()) + "  " +
+					this.formatNumber(date.getHours()) + ":" + this.formatNumber(date.getMinutes());
 			},
 			formatNumber(number) {
-				if(number < 10) {
+				if (number < 10) {
 					return "0" + number;
-				}else{
+				} else {
 					return "" + number;
 				}
 			},
@@ -89,7 +103,7 @@
 					let list = [];
 					for (let i = 0; i < this.history.length; i++) {
 						let startTime = this.turnTime(this.history[i].startTime);
-						let endTime = this.history[i].endTime? this.turnTime(this.history[i].endTime):""
+						let endTime = this.history[i].endTime ? this.turnTime(this.history[i].endTime) : ""
 						list.push({
 							"id": this.history[i].id,
 							"title": this.history[i].batch,
@@ -165,6 +179,25 @@
 		flex-wrap: wrap;
 	}
 
+	.info {
+		color: red;
+		font-size: 30upx;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+
+	.time {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.card {
+		width: 100%;
+	}
+
 	/* 列表 */
 	.list {
 		background-color: #fff;
@@ -180,64 +213,6 @@
 			&:active,
 			&.active {
 				background-color: #f3f3f3;
-			}
-
-			image {
-				height: 80upx;
-				width: 80upx;
-				border-radius: 4px;
-				margin-right: 20upx;
-			}
-
-			&>view {
-				line-height: 40upx;
-
-				.enter {
-					color: #999;
-					font-size: 24upx;
-				}
-
-				.time {
-					color: #999;
-					font-size: 24upx;
-				}
-
-				.enter {
-					width: 150upx;
-					position: absolute;
-					bottom: 10%;
-					right: 0;
-				}
-
-				.info {
-					color: red;
-					font-size: 30upx;
-					overflow: hidden;
-					text-overflow: ellipsis;
-					white-space: nowrap;
-				}
-
-				.time {
-					overflow: hidden;
-					text-overflow: ellipsis;
-					white-space: nowrap;
-				}
-			}
-		}
-
-		&>view:not(:first-child) {
-			margin-top: 1px;
-
-			&::after {
-				content: '';
-				display: block;
-				height: 0;
-				border-top: #CCC solid 1px;
-				width: 85%;
-				position: absolute;
-				top: -1px;
-				transform: scaleY(0.5);
-				/* 1px像素 */
 			}
 		}
 	}
