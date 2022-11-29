@@ -3,14 +3,19 @@
 		<view class="sun-index">
 			<view class="sun-logo-box">
 				<view class="sun-logo">
-					<image ></image>
-					<text>核酸助手</text>
+          <image src='@/static/manager.png'></image>
+          <view class='logotxt'>检测助手</view>
 				</view>
 			</view>
+      <view class="tags">
+        <view class='tagslabel'>可登入者：</view>
+        <u-tag plain style='width: 3rem' text="管理员"></u-tag>
+        <u-tag plain style='width: 6rem;margin-left: 10px' text="数据统计人员"></u-tag>
+      </view>
 			<view class="sun-login-box">
 				<view class="sun-label">
 					<image style="width: 28rpx;height:39rpx;" />
-					<text class="label-text">电话</text>
+					<u-text prefix-icon='account-fill' iconStyle="font-size: 18px" class="label-text" text='账号'></u-text>
 				</view>
 				<view class="item" :class="'sun-input-box ' + nameFocus">
 					<input v-model="phoneNumber" type="text" placeholder="请输入电话" placeholder-class="placeholder-class"/>
@@ -19,7 +24,7 @@
 			<view class="sun-login-box">
 				<view class="sun-label">
 					<image style="width: 29rpx;height:37rpx;" />
-					<text class="label-text">密码</text>
+          <u-text prefix-icon='lock-fill' iconStyle="font-size: 18px" class="label-text" text='密码'></u-text>
 				</view>
 				<view class="sun-input-box">
 					<input v-model="password" type="password" placeholder="请输入密码" placeholder-class="placeholder-class"/>
@@ -38,8 +43,12 @@
 
 <script>
 	import {api} from './api.js'
+  import UImage from "../../uni_modules/uview-ui/components/u-image/u-image";
+  import UTag from "../../uni_modules/uview-ui/components/u-tag/u-tag";
+  import UText from "../../uni_modules/uview-ui/components/u--text/u--text";
 	export default {
-		data() {
+    components: {UText, UTag, UImage},
+    data() {
 			return {
 				phoneNumber: '',
 				password: '',
@@ -48,7 +57,7 @@
 		methods: {
 				login(){
 					const { phoneNumber,password  } = this
-					if(!phoneNumber) return uni.showToast({title: '请输入电话',icon:'none',duration: 1500})
+					if(!phoneNumber) return uni.showToast({title: '请输入账号',icon:'none',duration: 1500})
 					if(!password) return uni.showToast({title: '请输入密码',icon:'none',duration: 1500})
 					const data = {
 						userId:phoneNumber,
@@ -76,13 +85,45 @@
 	}
 </script>
 
-<style>
+<style lang='scss'>
+  .tags{
+    padding: 20rpx 70rpx;
+    display: flex;
+    align-content: end;
+
+    .tagslabel{
+      margin-left: 1rem;
+      font-size: 16px;
+      color: #30816a;
+    }
+
+    .u-tag-wrapper{
+      margin-right: 0.8rem;
+    }
+  }
 	.sun-logo-box {
 		display: flex;
 		justify-content: center;
+    flex-direction: column;
 		align-items: center;
-		width: 750rpx;
 		height: 300rpx;
+
+    .logotxt{
+      text-align: center;
+      font-size: 14px;
+      letter-spacing: 0.2rem;
+      color: #4b4b4b;
+      transform: translateX(0.2rem);
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    image {
+      display: block;
+      width: 200rpx;
+      height: 200rpx;
+    }
+
+
 	}
 	.login-btn {
 		height: 82rpx;

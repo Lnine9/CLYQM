@@ -207,6 +207,7 @@
 		width: 100%;
 		height: 30px;
 		background-color: #fff;
+    visibility: hidden;
 	}
 
 	.bak-btn {
@@ -327,7 +328,9 @@
 		color: #fff;
 	}
 	.isend{
-		margin: 2rpx;		height: 450rpx;		width: 450rpx;
+		margin: 2rpx;
+		height: 450rpx;
+		width: 450rpx;
 		background-color: #fff;
 		font-size: 20px;
 		display: flex;

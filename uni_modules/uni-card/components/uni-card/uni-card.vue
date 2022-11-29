@@ -199,9 +199,10 @@
 				overflow: hidden;
 
 				.uni-card__header-content-title {
-					font-size: $uni-card-title;
 					color: $uni-cart-title-color;
 					// line-height: 22px;
+          font-weight: bold;
+          font-size: 16px;
 				}
 
 				.uni-card__header-content-subtitle {

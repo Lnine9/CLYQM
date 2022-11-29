@@ -247,6 +247,7 @@
 		width: 20%;
 		height: 30px;
 		line-height: 30px;
+    visibility: hidden;
 	}
 
 	.textA {
