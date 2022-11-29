@@ -15,7 +15,6 @@
 			}
 		},
 		onLoad() {
-
 		},
 		methods: {
 

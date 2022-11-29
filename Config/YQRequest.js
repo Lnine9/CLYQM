@@ -7,7 +7,8 @@ class YQRequest {
 
 	[config] = {
 		// baseURL: 'http://127.0.0.1:8899',
-		baseURL: 'https://renduoduo2019.com:8059',
+		// baseURL: 'https://renduoduo2019.com:8059',
+		baseURL: 'https://121.37.98.238:8058',
 	}
 
 	interceptors = {
