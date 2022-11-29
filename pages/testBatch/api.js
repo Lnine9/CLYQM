@@ -1,6 +1,6 @@
 import {yqRequest} from '@/Config/YQRequest.js'
 
-export class NDAPI {
+export class TBAPI {
 	/**
 	 * 获取所有批次和楼栋
 	 */
@@ -9,10 +9,10 @@ export class NDAPI {
 	}
 	
 	/**
-	 * 新增检测批次
+	 * 获取指定批次的检测信息
 	 */
-	static addBatch(data) {
-	  return yqRequest.post('/batch/createBatch', data);
+	static getTestListByBatch(data) {
+	  return yqRequest.get('/info/getTestListByBatch', data);
 	}
 	
 	/**

@@ -5,32 +5,36 @@
 			<u-row gutter="20" customStyle="margin-bottom: 5%;margin-top: 5%">
 				<u-col span="6">
 					<u-row>
-						<u-col span="4">
+						<u-col span="3">
 							<text>楼栋</text>
 						</u-col>
-						<u-col span="8">
-							<view>
-								<u-action-sheet :closeOnClickOverlay="true" :closeOnClickAction="true"
-									:actions="buildings" @select="selectClickB" @close="showB = false" :title="title"
-									:show="showB" round="10">
-								</u-action-sheet>
-								<u-button @click="showB = true">{{titleB}}</u-button>
+						<u-col span="9">
+							<view class="uni-list">
+								<view class="uni-list-cell">
+									<view class="uni-list-cell-db" style="border: rgb(236,236,236) solid 2px;text-align: center;">
+										<picker @change="bindPickerChangeB" :value="indexB" :range="builds">
+											<view class="uni-input">{{builds[indexB]}}</view>
+										</picker>
+									</view>
+								</view>
 							</view>
 						</u-col>
 					</u-row>
 				</u-col>
 				<u-col span="6">
 					<u-row>
-						<u-col span="4">
+						<u-col span="5">
 							<text>完成情况</text>
 						</u-col>
-						<u-col span="8">
-							<view>
-								<u-action-sheet :closeOnClickOverlay="true" :closeOnClickAction="true"
-									:actions="situation" @select="selectClickS" @close="showS = false" :title="title"
-									:show="showS" round="10">
-								</u-action-sheet>
-								<u-button @click="showS = true">{{titleS}}</u-button>
+						<u-col span="7">
+							<view class="uni-list">
+								<view class="uni-list-cell">
+									<view class="uni-list-cell-db" style="border: rgb(236,236,236) solid 2px;text-align: center;width: 85px;">
+										<picker @change="bindPickerChangeS" :value="indexS" :range="situation">
+											<view class="uni-input">{{situation[indexS]}}</view>
+										</picker>
+									</view>
+								</view>
 							</view>
 						</u-col>
 					</u-row>
@@ -96,36 +100,26 @@
 </template>
 
 <script>
-	import URow from "../../uni_modules/uview-ui/components/u-row/u-row";
-  import UCol from "../../uni_modules/uview-ui/components/u-col/u-col";
-  import UActionSheet from "../../uni_modules/uview-ui/components/u-action-sheet/u-action-sheet";
-  import UButton from "../../uni_modules/uview-ui/components/u-button/u-button";
-  import UCollapse from "../../uni_modules/uview-ui/components/u-collapse/u-collapse";
-  import UCollapseItem from "../../uni_modules/uview-ui/components/u-collapse-item/u-collapse-item";
-  import UGrid from "../../uni_modules/uview-ui/components/u-grid/u-grid";
-  import UGridItem from "../../uni_modules/uview-ui/components/u-grid-item/u-grid-item";
-  import UToast from "../../uni_modules/uview-ui/components/u-toast/u-toast";
-  import UDivider from "../../uni_modules/uview-ui/components/u-divider/u-divider";
-  import UniCard from "../../uni_modules/uni-card/components/uni-card/uni-card";
-  import ULoadmore from "../../uni_modules/uview-ui/components/u-loadmore/u-loadmore";
-  import UBackTop from "../../uni_modules/uview-ui/components/u-back-top/u-back-top";
-  export default {
-    components: {
-      UBackTop,
-      ULoadmore,
-      UniCard,
-      UDivider, UToast, UGridItem, UGrid, UCollapseItem, UCollapse, UButton, UActionSheet, UCol, URow},
-    data() {
+	import {
+		TBAPI
+	} from './api.js'
+	export default {
+		data() {
 			return {
-				batchId: '',
+				batchId: '34a58a797355924',
 				buildingId: '',
 				batchName: '检测批次',
+				studentId: '',
+				studentName: '',
+				stuStatus: '',
 				status: 'loadmore',
 				loadingText: '努力加载中',
 				loadmoreText: '轻轻上拉',
 				nomoreText: '实在没有了',
 				titleB: '选择楼栋',
-				titleS: '选择情况',
+				titleS: '全部',
+				indexB: 0,
+				indexS: 0,
 				showB: false,
 				showS: false,
 				//总人数
@@ -138,28 +132,9 @@
 				page: 0,
 				//滚动条
 				scrollTop: 0,
-				buildings: [{
-					name: '两江1栋'
-				}, {
-					name: '两江2栋'
-				}, {
-					name: '两江3栋'
-				}, {
-					name: '两江4栋'
-				}, {
-					name: '两江5栋'
-				}, {
-					name: '两江6栋'
-				}, {
-					name: '两江21栋'
-				}],
-				situation: [{
-					name: '全部'
-				}, {
-					name: '未完成'
-				}, {
-					name: '已完成'
-				}],
+				builds: [],
+				buildings: [],
+				situation: ['全部','未完成','已完成'],
 				baseList: [{
 						name: '总人数',
 						count: 0
@@ -293,26 +268,49 @@
 			this.page = ++this.page;
 			setTimeout(() => {
 				this.list += 20;
-				if(this.list > this.total) {
+				if (this.list > this.total) {
 					this.list = this.total;
 					this.status = 'nomore';
-				}
-				else this.status = 'loading';
+				} else this.status = 'loading';
 			}, 2000)
 		},
 		onPageScroll(e) {
 			this.scrollTop = e.scrollTop;
 		},
 		onShow() {
+			this.getBuildings();
 			this.getNumber();
 			this.getData();
 		},
+		onLoad(e) {
+			console.log(e);
+			if (e.batchId) {
+				this.batchId = e.batchId;
+				this.batchName = e.batch;
+				this.buildingId = e.buildingId;
+			}
+		},
 		methods: {
-			selectClickB(index) {
-				this.titleB = index.name;
+			bindPickerChangeB(e) {
+				console.log('picker发送选择改变，携带值为', e.detail.value);
+				this.indexB = e.detail.value;
+				this.buildingId = this.buildings[this.indexB].id;
+				this.stuInfo=[];
+				this.getData();
 			},
-			selectClickS(index) {
-				this.titleS = index.name;
+			bindPickerChangeS(e) {
+				console.log('picker发送选择改变，携带值为', e.detail.value);
+				this.indexS = e.detail.value;
+				this.stuInfo = [];
+				if(this.indexS == 1 || this.indexS == 0) {
+					this.stuStatus = 0
+					this.getData();
+				}
+				if(this.indexS == 2 || this.indexS == 0) {
+					this.stuStatus = 1
+					this.getData();
+				}
+
 			},
 			open(e) {
 				// console.log('open', e)
@@ -328,8 +326,57 @@
 				this.baseList[1].count = this.incomplete;
 				this.baseList[2].count = this.total - this.incomplete;
 			},
+			getBuildings() {
+				TBAPI.getBatchesAndBuildings().then(res => {
+					console.log(res);
+					if (res.statusCode == 404) {
+						uni.showToast({
+							title: '信息获取失败，刷新试试',
+							icon: 'none'
+						});
+						return;
+					}
+					this.buildings = res.data.data.buildings;
+					this.builds = [];
+					for (let i = 0; i < this.buildings.length; i++) {
+						this.builds.push(this.buildings[i].name);
+					};
+					console.log(this.builds);
+				}).catch(err => {
+					uni.showToast({
+						title: '信息获取失败，刷新试试',
+						icon: 'none'
+					});
+				});
+			},
 			getData() {
-				for (var i = 0; i < 100; i++) {
+				console.log(this.batchId);
+				let info = {
+					batchId: this.batchId,
+					buildingId: this.buildingId,
+					studentId: this.studentId,
+					studentName: this.studentName,
+					status: this.stuStatus,
+					currentPage: this.page + 1,
+					pageSize: 20
+				}
+				console.log(info);
+				// TBAPI.getTestListByBatch(info).then(res => {
+				// 	console.log(res);
+				// 	if (res.statusCode == 404) {
+				// 		uni.showToast({
+				// 			title: '信息获取失败，刷新试试',
+				// 			icon: 'none'
+				// 		});
+				// 		return;
+				// 	}
+				// }).catch(err => {
+				// 	uni.showToast({
+				// 		title: '信息获取失败，刷新试试',
+				// 		icon: 'none'
+				// 	});
+				// });
+				for (let i = 0; i < 100; i++) {
 					this.stuInfo.push({
 						stuId: '12023020216',
 						stuName: 'hxl',
@@ -346,11 +393,12 @@
 </script>
 
 <style>
-	.title{
-		font-weight:bolder;
+	.title {
+		font-weight: bolder;
 		text-align: center;
 		width: 100%;
 	}
+
 	.sideR {
 		background-color: rgb(236, 49, 130);
 		position: absolute;
@@ -402,7 +450,7 @@
 	.content {
 		margin-top: 220px;
 	}
-	
+
 	.lastBlock {
 		width: 100%;
 		height: 100px;
