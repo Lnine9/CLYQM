@@ -96,8 +96,26 @@
 </template>
 
 <script>
-	export default {
-		data() {
+	import URow from "../../uni_modules/uview-ui/components/u-row/u-row";
+  import UCol from "../../uni_modules/uview-ui/components/u-col/u-col";
+  import UActionSheet from "../../uni_modules/uview-ui/components/u-action-sheet/u-action-sheet";
+  import UButton from "../../uni_modules/uview-ui/components/u-button/u-button";
+  import UCollapse from "../../uni_modules/uview-ui/components/u-collapse/u-collapse";
+  import UCollapseItem from "../../uni_modules/uview-ui/components/u-collapse-item/u-collapse-item";
+  import UGrid from "../../uni_modules/uview-ui/components/u-grid/u-grid";
+  import UGridItem from "../../uni_modules/uview-ui/components/u-grid-item/u-grid-item";
+  import UToast from "../../uni_modules/uview-ui/components/u-toast/u-toast";
+  import UDivider from "../../uni_modules/uview-ui/components/u-divider/u-divider";
+  import UniCard from "../../uni_modules/uni-card/components/uni-card/uni-card";
+  import ULoadmore from "../../uni_modules/uview-ui/components/u-loadmore/u-loadmore";
+  import UBackTop from "../../uni_modules/uview-ui/components/u-back-top/u-back-top";
+  export default {
+    components: {
+      UBackTop,
+      ULoadmore,
+      UniCard,
+      UDivider, UToast, UGridItem, UGrid, UCollapseItem, UCollapse, UButton, UActionSheet, UCol, URow},
+    data() {
 			return {
 				batchId: '',
 				buildingId: '',

@@ -25,9 +25,9 @@
 			<text class="total">{{total}}</text>
 			<text class="refresh" @click="refresh">刷新</text>
 		</view>
-<!-- 		<view class='qrcode-opretion'>
+    <view class='qrcode-opretion'>
 			<button @click='end' v-if="!isEnd" class='end-btn'>结束</button>
-		</view> -->
+		</view>
 	</view>
 </template>
 

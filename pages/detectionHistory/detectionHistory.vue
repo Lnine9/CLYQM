@@ -42,6 +42,8 @@
         </view>
 
       </view>
+
+      <u-back-top :scroll-top="scrollTop"></u-back-top>
 		</view>
 	</view>
 </template>
@@ -57,8 +59,9 @@
   import URow from "../../uni_modules/uview-ui/components/u-row/u-row";
   import UCol from "../../uni_modules/uview-ui/components/u-col/u-col";
   import UIcon from "../../uni_modules/uview-ui/components/u-icon/u-icon";
+  import UBackTop from "../../uni_modules/uview-ui/components/u-back-top/u-back-top";
 	export default {
-    components: {UIcon, UCol, URow, UCollapseItem, UCollapse, UText, UButton},
+    components: {UBackTop, UIcon, UCol, URow, UCollapseItem, UCollapse, UText, UButton},
     data() {
 			return {
         isAdmin: false,
@@ -105,7 +108,7 @@
       toStc(batchId, batch, building) {
         //跳转至统计界面
         uni.navigateTo({
-          url: `/pages/testBatch/testBatch?building=${building}&batchId=${batchId}&batch=${batch}`
+          url: `/pages/testBatch/testBatch?batchId=${batchId}&batch=${batch}&building=${building}`
         })
       },
 			/*新增检测*/

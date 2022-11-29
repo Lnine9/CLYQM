@@ -4,7 +4,7 @@
 		    "path" : "pages/load/load",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "工作人员登录",
 		        "enablePullDownRefresh": false
 		    }
 		    
@@ -21,7 +21,7 @@
 		    "path" : "pages/sqr/sqr",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "检测历史",
+		        "navigationBarTitleText": "检测码",
 		        "enablePullDownRefresh": false
 		    }
 		}
@@ -29,7 +29,7 @@
 		    "path" : "pages/detectionHistory/detectionHistory",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "检测历史",
 		        "enablePullDownRefresh": true
 		    }
 		    
@@ -38,7 +38,7 @@
 		    "path" : "pages/newDetection/newDetection",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "新增检测",
 		        "enablePullDownRefresh": false
 		    }
 		    
@@ -47,7 +47,7 @@
             "path" : "pages/testBatch/testBatch",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "检测批次",
+                "navigationBarTitleText": "检测统计",
                 "enablePullDownRefresh": false
             }
             
