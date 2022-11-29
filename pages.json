@@ -43,7 +43,16 @@
 		    }
 		    
 		}
-	],
+	    ,{
+            "path" : "pages/testBatch/testBatch",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "检测批次",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
@@ -69,6 +78,14 @@
 			{
 				"name": "newh",
 				"path": "pages/newDetection/newDetection"
+			},
+			{
+				"name": "dHistory",
+				"path": "pages/detectionHistory/detectionHistory"
+			},
+			{
+				"name": "TBatch",
+				"path": "pages/testBatch/testBatch"
 			}
 	
 		]

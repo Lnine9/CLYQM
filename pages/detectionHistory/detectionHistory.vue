@@ -91,7 +91,6 @@
 			/* 获取列表数据 */
 			getListData() {
 				DHAPI.getDetectionHistory().then(res => {
-					console.log(res);
 					if (res.statusCode == 404) {
 						uni.showToast({
 							title: '检测信息获取失败，刷新试试',
