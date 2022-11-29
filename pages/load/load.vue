@@ -3,6 +3,7 @@
 		<view class="sun-index">
 			<view class="sun-logo-box">
 				<view class="sun-logo">
+					<image ></image>
 					<text>核酸助手</text>
 				</view>
 			</view>

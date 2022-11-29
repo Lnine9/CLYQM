@@ -17,4 +17,7 @@ export class api{
   static getHistory(data){
   	  return yqRequest.get('/history/getTestHistory',data)
   }
+  static isBind(data){
+  	  return yqRequest.get('/student/isBind',data)
+  }
 }	

@@ -6,7 +6,8 @@
 					<image class="sun-icon-img" src="../../static/scan.png" />
 				</view>
 			</view>
-			<view class="sbuilding" v-if="building"><text>{{building + '·' +batch}}</text></view>
+			<view class="sbuilding" v-if="building"><text>{{batch}}</text></view>
+			<view class="sbuilding" v-if="building"><text style="font-weight: bold;">{{building.substr(0, 2)}}</text><text>{{building.substr(2, -1)}}</text></view>
 			<view class="sun-login-box">
 				
 				<view class="sun-label">
@@ -26,9 +27,9 @@
 					<input v-model="name" type="text" :style="{color: needbind ?'#3c3c3c': '#a7a7a7'}" :disabled="!needbind" placeholder="请输入姓名" placeholder-class="placeholder-class" />
 				</view>
 			</view>
-			<view class="sbuilding" style="color: gray;font-size: 16px;font-weight: normal;"><text>{{sbuilding ? `您的楼栋：${sbuilding}`: ''}}</text></view>
+<!-- 			<view class="sbuilding" style="color: gray;font-size: 16px;font-weight: normal;"><text>{{sbuilding ? `您的楼栋：${sbuilding}`: ''}}</text></view> -->
 			<view class="login-btn-box" v-if="needbind">
-				<view class="login-btn" @click="handleSubmit">确认绑定</view>
+				<view class="login-btn" @click="handleSubmit">前往绑定</view>
 			</view>
 			<view class="login-btn-box" v-if="!needbind && !onlybind">
 				<view class="login-btn" @click="scan">确认检测</view>
@@ -87,7 +88,7 @@
 				wxid: undefined,
 				needlogin: false,
 				needbind: false,
-				historyId: '000000',
+				historyId: undefined,
 				onlybind: false,
 				sbuilding: '',
 			}
@@ -176,6 +177,10 @@
 							that.name = res.data.data.studentName
 							that.sbuilding = res.data.data.building
 							that.needbind = false
+							if (that.building !== that.sbuilding) {
+								that.fails = true
+								that.msg = `请前往${that.sbuilding}进行检测！`
+							}
 						} else {
 							that.needbind = true
 							uni.showToast({
@@ -305,16 +310,46 @@
 					duration: 1500
 				})
 				const that = this
-				uni.showModal({
-					title: '请确认信息',
-					content: `学号：${this.no}\n姓名：${this.name}`,
-					success(res) {
-						if (res.cancel) {
-							return
+				api.isBind({studentId: this.no,studentName: this.name}).then(res=> {
+					if (res.data.code == 200){
+						if (res.data.data.isBind == false){
+							uni.showModal({
+								title: '确认绑定',
+								content: `
+								学号：${res.data.data.studentId}\n
+								姓名：${res.data.data.studentName}\n
+								楼栋：${res.data.data.buildingName}\n
+								`,
+								success(res) {
+									if (res.cancel) {
+										return
+									}
+									that.bind()
+								}
+							})
+						} else {
+							uni.showToast({
+								title: "该学号已被绑定",
+								duration: 2000,
+								icon:'none',
+							})
 						}
-						that.bind()
+						
+					} else {
+						uni.showToast({
+							title: res.data.message,
+							icon:'none',
+							duration: 2000,
+						})
 					}
+				}).catch(err => {
+					uni.showToast({
+						title: '网络错误，请稍后重试',
+						duration: 2000,
+						icon:'none',
+					})
 				})
+				
 			},
 			wxlogin() {
 				let that = this

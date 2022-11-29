@@ -233,13 +233,13 @@
 
 	.batch {
 		font-size: 16px;
-		color: #fff;
+		color: #000000;
 	}
 
 	.building {
 		font-size: 28px;
 		font-weight: bold;
-		color: #ffd427;
+		color: #000000;
 	}
 
 	.donum {
@@ -273,7 +273,7 @@
 	.qrcode-box {
 		font-size: 28rpx;
 		width: 100%;
-		background-color: #6e7e8c;
+		background-color: #d9f4f3;
 		margin: 20rpx auto;
 		padding: 40rpx;
 		box-sizing: border-box;
