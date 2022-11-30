@@ -1,5 +1,6 @@
 <template>
 	<view>
+		<u-sticky>
 		<view class="topInfo">
 			<view class="title">{{batchName}}</view>
 			<u-row gutter="20" customStyle="margin-bottom: 5%;margin-top: 5%">
@@ -11,7 +12,8 @@
 						<u-col span="9">
 							<view class="uni-list">
 								<view class="uni-list-cell">
-									<view class="uni-list-cell-db" style="border: rgb(236,236,236) solid 2px;text-align: center;">
+									<view class="uni-list-cell-db"
+										style="border: rgb(236,236,236) solid 2px;text-align: center;">
 										<picker @change="bindPickerChangeB" :value="indexB" :range="builds">
 											<view class="uni-input">{{builds[indexB]}}</view>
 										</picker>
@@ -29,7 +31,8 @@
 						<u-col span="7">
 							<view class="uni-list">
 								<view class="uni-list-cell">
-									<view class="uni-list-cell-db" style="border: rgb(236,236,236) solid 2px;text-align: center;width: 85px;">
+									<view class="uni-list-cell-db"
+										style="border: rgb(236,236,236) solid 2px;text-align: center;width: 85px;">
 										<picker @change="bindPickerChangeS" :value="indexS" :range="situation">
 											<view class="uni-input">{{situation[indexS]}}</view>
 										</picker>
@@ -42,7 +45,7 @@
 			</u-row>
 			<u-collapse @change="change" @close="close" @open="open">
 				<u-collapse-item title="更多筛选" name="more select">
-					<text class="u-collapse-content">涵盖uniapp各个方面，给开发者方向指导和设计理念，让您茅塞顿开，一马平川</text>
+					<text class="u-collapse-content"></text>
 				</u-collapse-item>
 			</u-collapse>
 			<view>
@@ -56,9 +59,10 @@
 			</view>
 			<u-divider customStyle="margin-bottom:0px"></u-divider>
 		</view>
-		<view class="remind">
+		</u-sticky>
+	<!-- 	<view class="remind">
 			一键提醒该批次未完成同学
-		</view>
+		</view> -->
 		<view class="content">
 			<view v-for="index in list" :key="index">
 				<uni-card is-shadow shadow="5px 5px 30px #DDDDDD">
@@ -123,18 +127,23 @@
 				showB: false,
 				showS: false,
 				//总人数
-				total: 114,
+				total: 0,
 				//未完成数
-				incomplete: 102,
+				incomplete: 0,
+				//完成数
+				complete: 0,
 				//要显示的条数
-				list: 20,
+				list: 0,
+				//每页条数
+				pageSize: 20,
 				//页数
 				page: 0,
 				//滚动条
 				scrollTop: 0,
+				building: '',
 				builds: [],
 				buildings: [],
-				situation: ['全部','未完成','已完成'],
+				situation: ['全部', '未完成', '已完成'],
 				baseList: [{
 						name: '总人数',
 						count: 0
@@ -148,130 +157,21 @@
 						count: 0
 					},
 				],
-				stuInfo: [{
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '未完成'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '未完成'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, {
-					stuId: '12023020216',
-					stuName: 'hxl',
-					stuBuilding: '3栋',
-					stuCollege: '人工智能学院',
-					stuMajor: '软件工程',
-					stuClazz: '120230202',
-					stuStatus: '2022.11.29'
-				}, ]
+				stuInfo: []
 			}
 		},
 		onReachBottom() {
 			this.status = 'loading';
 			this.page = ++this.page;
+			console.log(this.total);
+			this.getData();
 			setTimeout(() => {
-				this.list += 20;
-				if (this.list > this.total) {
+				if (this.list < this.total) {
+					this.status = 'loading';
+				} else {
 					this.list = this.total;
 					this.status = 'nomore';
-				} else this.status = 'loading';
+				} 
 			}, 2000)
 		},
 		onPageScroll(e) {
@@ -279,38 +179,72 @@
 		},
 		onShow() {
 			this.getBuildings();
-			this.getNumber();
-			this.getData();
 		},
 		onLoad(e) {
 			console.log(e);
 			if (e.batchId) {
 				this.batchId = e.batchId;
 				this.batchName = e.batch;
-				this.buildingId = e.buildingId;
+				this.building = e.building;
 			}
+		},
+		onPullDownRefresh() {
+			this.getData();
 		},
 		methods: {
 			bindPickerChangeB(e) {
-				console.log('picker发送选择改变，携带值为', e.detail.value);
 				this.indexB = e.detail.value;
 				this.buildingId = this.buildings[this.indexB].id;
-				this.stuInfo=[];
+				this.page = 0;
+				this.list = 0;
+				this.stuInfo = [];
 				this.getData();
 			},
 			bindPickerChangeS(e) {
-				console.log('picker发送选择改变，携带值为', e.detail.value);
 				this.indexS = e.detail.value;
+				this.page = 0;
+				this.list = 0;
 				this.stuInfo = [];
-				if(this.indexS == 1 || this.indexS == 0) {
+				if (this.indexS == 0) {
+					 this.stuStatus = '';
+					 this.getData();
+				}
+				if (this.indexS == 1) {
 					this.stuStatus = 0
 					this.getData();
 				}
-				if(this.indexS == 2 || this.indexS == 0) {
+				if (this.indexS == 2) {
 					this.stuStatus = 1
 					this.getData();
 				}
 
+			},
+			getIndexB() {
+				for (let i = 0; i < this.builds.length; i++) {
+					if(this.builds[i] == this.building) {
+						this.indexB = i;
+						this.buildingId = this.buildings[this.indexB].id;
+						console.log("aaaa");
+						console.log(this.buildingId);
+						return;
+					}
+				}
+			},
+			turnTime(time) {
+				if (!time) {
+					return ""
+				}
+				var date = new Date(parseInt(time));
+				return date.getFullYear() + "." + this.formatNumber(date.getMonth() + 1) + "." + this.formatNumber(date
+						.getDate()) + "  " +
+					this.formatNumber(date.getHours()) + ":" + this.formatNumber(date.getMinutes());
+			},
+			formatNumber(number) {
+				if (number < 10) {
+					return "0" + number;
+				} else {
+					return "" + number;
+				}
 			},
 			open(e) {
 				// console.log('open', e)
@@ -323,12 +257,11 @@
 			},
 			getNumber() {
 				this.baseList[0].count = this.total;
-				this.baseList[1].count = this.incomplete;
-				this.baseList[2].count = this.total - this.incomplete;
+				this.baseList[1].count = this.complete;
+				this.baseList[2].count = this.incomplete;
 			},
 			getBuildings() {
 				TBAPI.getBatchesAndBuildings().then(res => {
-					console.log(res);
 					if (res.statusCode == 404) {
 						uni.showToast({
 							title: '信息获取失败，刷新试试',
@@ -341,7 +274,8 @@
 					for (let i = 0; i < this.buildings.length; i++) {
 						this.builds.push(this.buildings[i].name);
 					};
-					console.log(this.builds);
+					this.getIndexB();
+					this.getData();
 				}).catch(err => {
 					uni.showToast({
 						title: '信息获取失败，刷新试试',
@@ -350,7 +284,6 @@
 				});
 			},
 			getData() {
-				console.log(this.batchId);
 				let info = {
 					batchId: this.batchId,
 					buildingId: this.buildingId,
@@ -358,35 +291,46 @@
 					studentName: this.studentName,
 					status: this.stuStatus,
 					currentPage: this.page + 1,
-					pageSize: 20
+					pageSize: this.pageSize
 				}
 				console.log(info);
-				// TBAPI.getTestListByBatch(info).then(res => {
-				// 	console.log(res);
-				// 	if (res.statusCode == 404) {
-				// 		uni.showToast({
-				// 			title: '信息获取失败，刷新试试',
-				// 			icon: 'none'
-				// 		});
-				// 		return;
-				// 	}
-				// }).catch(err => {
-				// 	uni.showToast({
-				// 		title: '信息获取失败，刷新试试',
-				// 		icon: 'none'
-				// 	});
-				// });
-				for (let i = 0; i < 100; i++) {
-					this.stuInfo.push({
-						stuId: '12023020216',
-						stuName: 'hxl',
-						stuBuilding: '3栋',
-						stuCollege: '人工智能学院',
-						stuMajor: '软件工程',
-						stuClazz: '120230202',
-						stuStatus: '未完成'
-					})
-				}
+				TBAPI.getTestListByBatch(info).then(res => {
+					console.log(res);
+					if (res.statusCode == 404) {
+						uni.showToast({
+							title: '信息获取失败，刷新试试',
+							icon: 'none'
+						});
+						return;
+					}
+					let temp = res.data.data.studentTestInfo;
+					console.log(temp);
+					for (let i = 0; i < temp.length; i++) {
+						this.stuInfo.push({
+							stuId: temp[i].studentId,
+							stuName: temp[i].studentName,
+							stuBuilding: temp[i].buildingName,
+							stuCollege: temp[i].faculty,
+							stuMajor: temp[i].major,
+							stuClazz: temp[i].squad,
+							stuStatus: temp[i].status == 0 ? '未完成' : this.turnTime(temp[i].confirmTime)
+						})
+					}
+					this.total =  res.data.data.allNum;
+					this.incomplete = res.data.data.unCompleteNum;
+					this.complete = res.data.data.completeNum;
+					if(temp.length < this.pageSize) {
+						this.list = this.total;
+					}else{
+						this.list = this.list + this.pageSize;  
+					}
+					this.getNumber();
+				}).catch(err => {
+					uni.showToast({
+						title: '信息获取失败，刷新试试',
+						icon: 'none'
+					});
+				});
 			}
 		}
 	}
@@ -441,14 +385,13 @@
 	}
 
 	.topInfo {
-		position: fixed;
 		top: 0;
-		z-index: 100;
+		width: 100%;
 		background-color: rgb(255, 255, 255);
 	}
 
 	.content {
-		margin-top: 220px;
+		/* margin-top: 220px; */
 	}
 
 	.lastBlock {

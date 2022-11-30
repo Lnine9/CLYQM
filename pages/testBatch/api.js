@@ -14,11 +14,5 @@ export class TBAPI {
 	static getTestListByBatch(data) {
 	  return yqRequest.get('/info/getTestListByBatch', data);
 	}
-	
-	/**
-	 * 新增检测历史
-	 */
-	static createTestHistory(data) {
-	  return yqRequest.post('/history/createTestHistory', data);
-	}
+
 }
